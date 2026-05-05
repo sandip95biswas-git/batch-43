@@ -68,3 +68,18 @@ Step 5: Push the Image
                                 docker push africa-south1-docker.pkg.dev/march22paid/test/my-ajith:v1
 ✅ Done!
 Now your image is available in Artifact Registry 🎉
+
+
+--------------
+
+
+docker network create my-network
+
+docker network ls
+
+brigge n/w
+
+docker run -dit --name backend --network my-network nginx
+docker run -dit --name frontend --network my-network alpine sh
+
+docker exec -it frontend sh
