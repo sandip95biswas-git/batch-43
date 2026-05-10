@@ -1,4 +1,4 @@
-
+41 42
 
 
 Part 1 Create 3 ubuntu VM’s or Docker container 
@@ -37,7 +37,9 @@ Step 1 Go to docker playground create an  instance / node and create 3 Ubuntu  c
 2ⁿᵈ target 1
 3ʳᵈ target 2
 
-Step 2 create containers     apt-get update && apt install docker.io -y
+Step 2 create containers     
+sudo -i
+apt-get update && apt install docker.io -y
 
 docker run -itd --name ansible_master ubuntu /bin/bash
 docker run -itd --name target1 ubuntu /bin/bash
