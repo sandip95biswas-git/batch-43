@@ -60,3 +60,15 @@ add-apt-repository --yes --update ppa:ansible/ansible
 apt install ansible
 
 ansible --version
+
+-----
+realetiineg issue 
+
+mkdir -p /etc/ansible
+             cd /etc/ansible
+			 
+			 
+vi  ansible.cfg
+[defaults]
+inventory = /etc/ansible/hosts
+host_key_checking = False
