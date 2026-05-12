@@ -1,0 +1,425 @@
+# Kubernetes Troubleshooting Commands 🚀
+
+A practical Kubernetes troubleshooting guide for DevOps Engineers, SREs, Cloud Engineers, and Students.
+This repository contains commonly used `kubectl` commands to debug real-world Kubernetes issues.
+
+---
+
+# 📌 Common Kubernetes Issues Covered
+
+* Pods Not Starting
+* Service Not Accessible
+* Persistent Volume Claim (PVC) Issues
+* ConfigMap Key Not Found
+* CrashLoopBackOff Status
+* ImagePullBackOff Error
+* Node Not Ready
+* Failed Scheduling
+* RBAC Authorization Errors
+* Ingress Controller Issues
+
+---
+
+# 1️⃣ Pods Not Starting
+
+## Check Pod Status
+
+```bash
+kubectl get pods
+```
+
+## Describe Pod
+
+```bash
+kubectl describe pod <pod-name>
+```
+
+## Check Logs
+
+```bash
+kubectl logs <pod-name>
+```
+
+## Multi-Container Pod Logs
+
+```bash
+kubectl logs <pod-name> -c <container-name>
+```
+
+## Watch Pods Live
+
+```bash
+kubectl get pods -w
+```
+
+---
+
+# 2️⃣ Service Not Accessible
+
+## Check Services
+
+```bash
+kubectl get svc
+```
+
+## Describe Service
+
+```bash
+kubectl describe svc <service-name>
+```
+
+## Check Endpoints
+
+```bash
+kubectl get endpoints
+```
+
+## Verify Pod Labels
+
+```bash
+kubectl get pods --show-labels
+```
+
+## Test Connectivity Inside Cluster
+
+```bash
+kubectl exec -it <pod-name> -- curl <service-name>
+```
+
+---
+
+# 3️⃣ Persistent Volume Claim (PVC) Issues
+
+## Check PVC Status
+
+```bash
+kubectl get pvc
+```
+
+## Describe PVC
+
+```bash
+kubectl describe pvc <pvc-name>
+```
+
+## Check Persistent Volumes
+
+```bash
+kubectl get pv
+```
+
+## Describe Persistent Volume
+
+```bash
+kubectl describe pv <pv-name>
+```
+
+## Check Storage Classes
+
+```bash
+kubectl get sc
+```
+
+---
+
+# 4️⃣ ConfigMap Key Not Found
+
+## List ConfigMaps
+
+```bash
+kubectl get configmap
+```
+
+## Describe ConfigMap
+
+```bash
+kubectl describe configmap <configmap-name>
+```
+
+## View YAML Output
+
+```bash
+kubectl get configmap <configmap-name> -o yaml
+```
+
+## Check Pod Events
+
+```bash
+kubectl describe pod <pod-name>
+```
+
+---
+
+# 5️⃣ CrashLoopBackOff Status
+
+## Check Pod Status
+
+```bash
+kubectl get pods
+```
+
+## Describe Pod
+
+```bash
+kubectl describe pod <pod-name>
+```
+
+## Previous Container Logs
+
+```bash
+kubectl logs <pod-name> --previous
+```
+
+## Current Logs
+
+```bash
+kubectl logs <pod-name>
+```
+
+## Watch Restart Count
+
+```bash
+kubectl get pods -w
+```
+
+---
+
+# 6️⃣ ImagePullBackOff Error
+
+## Describe Pod
+
+```bash
+kubectl describe pod <pod-name>
+```
+
+## Verify Image Name
+
+```bash
+kubectl get deployment <deployment-name> -o yaml
+```
+
+## Check Secrets
+
+```bash
+kubectl get secrets
+```
+
+## Verify imagePullSecrets
+
+```bash
+kubectl describe serviceaccount default
+```
+
+---
+
+# 7️⃣ Node Not Ready
+
+## Check Node Status
+
+```bash
+kubectl get nodes
+```
+
+## Describe Node
+
+```bash
+kubectl describe node <node-name>
+```
+
+## Check Pods Running on Nodes
+
+```bash
+kubectl get pods -A -o wide
+```
+
+## Check Node Conditions
+
+```bash
+kubectl describe node <node-name> | grep Conditions -A 10
+```
+
+---
+
+# 8️⃣ Failed Scheduling
+
+## Check Events
+
+```bash
+kubectl get events --sort-by=.metadata.creationTimestamp
+```
+
+## Describe Pod
+
+```bash
+kubectl describe pod <pod-name>
+```
+
+## Check Node Resources
+
+```bash
+kubectl top nodes
+```
+
+## Check Taints
+
+```bash
+kubectl describe node <node-name> | grep Taints
+```
+
+---
+
+# 9️⃣ RBAC Authorization Errors
+
+## Check Roles
+
+```bash
+kubectl get roles
+```
+
+## Check RoleBindings
+
+```bash
+kubectl get rolebindings
+```
+
+## Check ClusterRoles
+
+```bash
+kubectl get clusterroles
+```
+
+## Check ClusterRoleBindings
+
+```bash
+kubectl get clusterrolebindings
+```
+
+## Verify User Permissions
+
+```bash
+kubectl auth can-i create pods
+```
+
+## Check Another User Permission
+
+```bash
+kubectl auth can-i delete deployments --as=user1
+```
+
+---
+
+# 🔟 Ingress Controller Issues
+
+## Check Ingress Resources
+
+```bash
+kubectl get ingress
+```
+
+## Describe Ingress
+
+```bash
+kubectl describe ingress <ingress-name>
+```
+
+## Check Ingress Controller Pods
+
+```bash
+kubectl get pods -n ingress-nginx
+```
+
+## Check Ingress Controller Logs
+
+```bash
+kubectl logs -n ingress-nginx <pod-name>
+```
+
+## Check Ingress Services
+
+```bash
+kubectl get svc -n ingress-nginx
+```
+
+---
+
+# 🔥 Master Kubernetes Troubleshooting Commands
+
+These commands help in almost every Kubernetes troubleshooting scenario.
+
+## Get All Resources
+
+```bash
+kubectl get all
+```
+
+## Describe Any Resource
+
+```bash
+kubectl describe <resource> <name>
+```
+
+## View Logs
+
+```bash
+kubectl logs <pod-name>
+```
+
+## Check Events
+
+```bash
+kubectl get events
+```
+
+## View All Pods Across Namespaces
+
+```bash
+kubectl get pods -A
+```
+
+## Get Pod Details with Node Information
+
+```bash
+kubectl get pods -o wide
+```
+
+## Cluster Information
+
+```bash
+kubectl cluster-info
+```
+
+---
+
+# 🚀 Real Production Troubleshooting Flow
+
+Most DevOps Engineers follow this sequence during production issues:
+
+```text
+1. Check Pod Status
+2. Describe Pod
+3. Check Logs
+4. Check Events
+5. Verify Service & Endpoints
+6. Verify Node Health
+7. Verify Storage / Network / RBAC
+```
+
+---
+
+# 💡 Useful For
+
+* Kubernetes Beginners
+* DevOps Engineers
+* Cloud Engineers
+* SRE Teams
+* Interview Preparation
+* Production Troubleshooting
+* Classroom & Workshop Training
+
+---
+
+# ⭐ Support
+
+If this repository helped you, give it a ⭐ on GitHub and share with the DevOps community.
+
+Happy Learning 🚀
