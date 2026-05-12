@@ -1,425 +1,120 @@
-# Kubernetes Troubleshooting Commands 🚀
+# 🚀 Kubernetes Troubleshooting — Fresher's Quick Reference
 
-A practical Kubernetes troubleshooting guide for DevOps Engineers, SREs, Cloud Engineers, and Students.
-This repository contains commonly used `kubectl` commands to debug real-world Kubernetes issues.
-
----
-
-# 📌 Common Kubernetes Issues Covered
-
-* Pods Not Starting
-* Service Not Accessible
-* Persistent Volume Claim (PVC) Issues
-* ConfigMap Key Not Found
-* CrashLoopBackOff Status
-* ImagePullBackOff Error
-* Node Not Ready
-* Failed Scheduling
-* RBAC Authorization Errors
-* Ingress Controller Issues
+> **CloudDevOpsHub** | For Demo & Interview Prep | Batch 43
 
 ---
 
-# 1️⃣ Pods Not Starting
-
-## Check Pod Status
+## 🔍 Golden Rule — Always Start Here
 
 ```bash
-kubectl get pods
-```
-
-## Describe Pod
-
-```bash
-kubectl describe pod <pod-name>
-```
-
-## Check Logs
-
-```bash
-kubectl logs <pod-name>
-```
-
-## Multi-Container Pod Logs
-
-```bash
-kubectl logs <pod-name> -c <container-name>
-```
-
-## Watch Pods Live
-
-```bash
-kubectl get pods -w
+kubectl get pods -n <namespace>          # See what's wrong
+kubectl describe pod <pod-name>          # Why it's wrong
+kubectl logs <pod-name> --previous       # What crashed
 ```
 
 ---
 
-# 2️⃣ Service Not Accessible
-
-## Check Services
-
+## 1. 🔴 Pod Not Starting
 ```bash
-kubectl get svc
-```
-
-## Describe Service
-
-```bash
-kubectl describe svc <service-name>
-```
-
-## Check Endpoints
-
-```bash
-kubectl get endpoints
-```
-
-## Verify Pod Labels
-
-```bash
-kubectl get pods --show-labels
-```
-
-## Test Connectivity Inside Cluster
-
-```bash
-kubectl exec -it <pod-name> -- curl <service-name>
+kubectl get pods -n <namespace>
+kubectl describe pod <pod-name> -n <namespace>
+kubectl get events -n <namespace> --sort-by='.lastTimestamp'
 ```
 
 ---
 
-# 3️⃣ Persistent Volume Claim (PVC) Issues
-
-## Check PVC Status
-
+## 2. 🌐 Service Not Accessible
 ```bash
-kubectl get pvc
+kubectl get svc -n <namespace>
+kubectl get endpoints <service-name> -n <namespace>   # Empty = label mismatch!
+kubectl port-forward svc/<service-name> 8080:80        # Quick local test
 ```
 
-## Describe PVC
+---
 
+## 3. 💾 PVC Not Bound
 ```bash
-kubectl describe pvc <pvc-name>
-```
-
-## Check Persistent Volumes
-
-```bash
+kubectl get pvc -n <namespace>
 kubectl get pv
-```
-
-## Describe Persistent Volume
-
-```bash
-kubectl describe pv <pv-name>
-```
-
-## Check Storage Classes
-
-```bash
-kubectl get sc
+kubectl describe pvc <pvc-name> -n <namespace>
 ```
 
 ---
 
-# 4️⃣ ConfigMap Key Not Found
-
-## List ConfigMaps
-
+## 4. ⚙️ ConfigMap Key Missing
 ```bash
-kubectl get configmap
-```
-
-## Describe ConfigMap
-
-```bash
-kubectl describe configmap <configmap-name>
-```
-
-## View YAML Output
-
-```bash
-kubectl get configmap <configmap-name> -o yaml
-```
-
-## Check Pod Events
-
-```bash
-kubectl describe pod <pod-name>
+kubectl get configmap -n <namespace>
+kubectl describe configmap <cm-name> -n <namespace>
+kubectl exec -it <pod-name> -- env | grep <KEY>        # Check inside pod
 ```
 
 ---
 
-# 5️⃣ CrashLoopBackOff Status
-
-## Check Pod Status
-
+## 5. 🔁 CrashLoopBackOff
 ```bash
-kubectl get pods
-```
-
-## Describe Pod
-
-```bash
-kubectl describe pod <pod-name>
-```
-
-## Previous Container Logs
-
-```bash
-kubectl logs <pod-name> --previous
-```
-
-## Current Logs
-
-```bash
-kubectl logs <pod-name>
-```
-
-## Watch Restart Count
-
-```bash
-kubectl get pods -w
+kubectl logs <pod-name> --previous        # ← Most important command!
+kubectl describe pod <pod-name>           # Check liveness probe
 ```
 
 ---
 
-# 6️⃣ ImagePullBackOff Error
-
-## Describe Pod
-
+## 6. 🖼️ ImagePullBackOff
 ```bash
-kubectl describe pod <pod-name>
-```
-
-## Verify Image Name
-
-```bash
-kubectl get deployment <deployment-name> -o yaml
-```
-
-## Check Secrets
-
-```bash
-kubectl get secrets
-```
-
-## Verify imagePullSecrets
-
-```bash
-kubectl describe serviceaccount default
+kubectl describe pod <pod-name>           # Check image name & tag
+kubectl get secret -n <namespace>         # Check pull secret exists
 ```
 
 ---
 
-# 7️⃣ Node Not Ready
-
-## Check Node Status
-
+## 7. 🖥️ Node Not Ready
 ```bash
 kubectl get nodes
-```
-
-## Describe Node
-
-```bash
-kubectl describe node <node-name>
-```
-
-## Check Pods Running on Nodes
-
-```bash
-kubectl get pods -A -o wide
-```
-
-## Check Node Conditions
-
-```bash
-kubectl describe node <node-name> | grep Conditions -A 10
+kubectl describe node <node-name>         # Check conditions
+kubectl top node                          # CPU / Memory usage
 ```
 
 ---
 
-# 8️⃣ Failed Scheduling
-
-## Check Events
-
+## 8. ⏳ Pod Stuck in Pending (Scheduling Failed)
 ```bash
-kubectl get events --sort-by=.metadata.creationTimestamp
-```
-
-## Describe Pod
-
-```bash
-kubectl describe pod <pod-name>
-```
-
-## Check Node Resources
-
-```bash
-kubectl top nodes
-```
-
-## Check Taints
-
-```bash
-kubectl describe node <node-name> | grep Taints
+kubectl describe pod <pod-name>           # Look at Events section
+kubectl get nodes --show-labels           # Check nodeSelector match
 ```
 
 ---
 
-# 9️⃣ RBAC Authorization Errors
-
-## Check Roles
-
+## 9. 🔐 RBAC Forbidden Error
 ```bash
-kubectl get roles
-```
-
-## Check RoleBindings
-
-```bash
-kubectl get rolebindings
-```
-
-## Check ClusterRoles
-
-```bash
-kubectl get clusterroles
-```
-
-## Check ClusterRoleBindings
-
-```bash
-kubectl get clusterrolebindings
-```
-
-## Verify User Permissions
-
-```bash
-kubectl auth can-i create pods
-```
-
-## Check Another User Permission
-
-```bash
-kubectl auth can-i delete deployments --as=user1
+kubectl auth can-i get pods --as=system:serviceaccount:<ns>:<sa>
+kubectl get rolebindings -n <namespace>
 ```
 
 ---
 
-# 🔟 Ingress Controller Issues
-
-## Check Ingress Resources
-
+## 10. 🌍 Ingress Not Working
 ```bash
-kubectl get ingress
-```
-
-## Describe Ingress
-
-```bash
-kubectl describe ingress <ingress-name>
-```
-
-## Check Ingress Controller Pods
-
-```bash
-kubectl get pods -n ingress-nginx
-```
-
-## Check Ingress Controller Logs
-
-```bash
-kubectl logs -n ingress-nginx <pod-name>
-```
-
-## Check Ingress Services
-
-```bash
-kubectl get svc -n ingress-nginx
+kubectl get ingress -n <namespace>
+kubectl describe ingress <name> -n <namespace>   # Check backend & rules
+kubectl get ingressclass                          # Is controller set?
 ```
 
 ---
 
-# 🔥 Master Kubernetes Troubleshooting Commands
-
-These commands help in almost every Kubernetes troubleshooting scenario.
-
-## Get All Resources
+## ⚡ 5 Commands Every Fresher Must Know
 
 ```bash
-kubectl get all
-```
-
-## Describe Any Resource
-
-```bash
-kubectl describe <resource> <name>
-```
-
-## View Logs
-
-```bash
-kubectl logs <pod-name>
-```
-
-## Check Events
-
-```bash
-kubectl get events
-```
-
-## View All Pods Across Namespaces
-
-```bash
-kubectl get pods -A
-```
-
-## Get Pod Details with Node Information
-
-```bash
-kubectl get pods -o wide
-```
-
-## Cluster Information
-
-```bash
-kubectl cluster-info
+kubectl get pods -A                        # All pods all namespaces
+kubectl describe pod <name>                # Full detail + events
+kubectl logs <name> --previous             # Crash logs
+kubectl get events --sort-by=lastTimestamp # Timeline of what happened
+kubectl rollout restart deployment/<name>  # Quick fix restart
 ```
 
 ---
 
-# 🚀 Real Production Troubleshooting Flow
-
-Most DevOps Engineers follow this sequence during production issues:
-
-```text
-1. Check Pod Status
-2. Describe Pod
-3. Check Logs
-4. Check Events
-5. Verify Service & Endpoints
-6. Verify Node Health
-7. Verify Storage / Network / RBAC
-```
+> 💡 **Demo Tip:** In interviews, always say —  
+> *"First I check pod status → then describe → then logs"*  
+> That's the 3-step debug flow interviewers love! ✅
 
 ---
-
-# 💡 Useful For
-
-* Kubernetes Beginners
-* DevOps Engineers
-* Cloud Engineers
-* SRE Teams
-* Interview Preparation
-* Production Troubleshooting
-* Classroom & Workshop Training
-
----
-
-# ⭐ Support
-
-If this repository helped you, give it a ⭐ on GitHub and share with the DevOps community.
-
-Happy Learning 🚀
+*CloudDevOpsHub | India's Largest Cloud & DevOps Community 🇮🇳*
