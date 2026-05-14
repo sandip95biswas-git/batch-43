@@ -19,3 +19,26 @@ helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack --
 “kube-prometheus-stack” is the name of the release. You can change this if you want.
 “prometheus-community/kube-prometheus-stack” is the name of the chart.
 “monitor” is the name of the namespace where we are going to deploy the operator.
+
+
+---------------
+
+wait untill deploymnet completed   max 4 min 
+
+
+kubectl --namespace monitor get pods -l "release=kube-prometheus-stack"
+ kubectl get po --namespace monitor
+
+
+  508  kubectl get svc --namespace monitor
+
+  509  kubectl get deploy --namespace monitor
+
+you will get your pwd
+kubectl --namespace monitor get secrets kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+
+expose as parinta expained from UI   3000
+
+ kubectl get svc --namespace monitor
+
+
