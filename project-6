@@ -19,8 +19,8 @@ Step-4
 
 sudo apt install poppler-utils -y
 
-git clone https://github.com/CloudDevOpsHub/ATS-Multi-Cloud-AI-Project.git        removed 
-git clone https://github.com/CloudDevOpsHub/Application-Tracking-System.git    
+git clone https://github.com/CloudDevOpsHub/ATS-Multi-Cloud-AI-Project.git       (repos are modified>>in app.py file>> gemini API updated to 3.5-flash from 2.0-flash)
+git clone https://github.com/CloudDevOpsHub/Application-Tracking-System.git     (repos are modified>>in app.py file>> gemini API updated to 3.5-flash from 2.0-flash)
 
 cd 
 
@@ -42,12 +42,13 @@ Part 4 AI Gemini Setup
 
 Get Gemini API Key from Google Cloud Platform (GCP)
 Go to google cloud console à Create project àsearch gemini apiàclick on gemini api --> manage -->Generative Language API->credentials --> create credentails -->get api
-
+search credentials>> create new credentials>> API key >>selecting gemini API (if not enabled: enable the API)>> intregate this with your google service account (if not create the service account) (for free tier accounts) (due to the generative API deprication not using the API key "Gemini for G cloud API")
 Part-5 Connect AWS ATS application with GCP Gemini AI
  
 1.Add the API Key to Streamlit Secrets
 mkdir -p .streamlit
-vi .streamlit/secrets.toml
+cd .streamlit
+vi secrets.toml
 
 GOOGLE_API_KEY = "your-api-key-here"
 
